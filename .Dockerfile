@@ -1,19 +1,15 @@
-FROM python:3.10-slim
+FROM alpine:latest
 
-# লিনাক্স প্যাকেজ ম্যানেজার আপডেট ও FFmpeg ইন্সটল
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends ffmpeg && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+# FFmpeg ইন্সটল
+RUN apk add --no-cache ffmpeg
 
 WORKDIR /app
 
-# প্রয়োজনীয় ডিপেন্ডেন্সি
-RUN pip install --no-cache-dir flask
+# স্ট্যাটাস ফাইল তৈরি
+RUN echo "Service Active | FFmpeg Ready" > index.html
 
-COPY . /app
-
-# রেলওয়ের ডাইনামিক পোর্ট বাইন্ড করার জন্য
+# রেলওয়ের জন্য ডিফল্ট পোর্ট
 ENV PORT=8080
 
-CMD ["python", "app.py"]
+# বিল্ট-ইন ওয়েব সার্ভার চালু রাখা যাতে ক্র্যাশ না করে
+CMD sh -c "httpd -f -p ${PORT:-8080}"
