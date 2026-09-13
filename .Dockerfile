@@ -1,15 +1,7 @@
-FROM alpine:latest
+FROM nginx:alpine
 
-# FFmpeg ইন্সটল
-RUN apk add --no-cache ffmpeg
+RUN echo "<h1>System Status: 200 OK | Node Active</h1>" > /usr/share/nginx/html/index.html
 
-WORKDIR /app
+EXPOSE 80
 
-# স্ট্যাটাস ফাইল তৈরি
-RUN echo "Service Active | FFmpeg Ready" > index.html
-
-# রেলওয়ের জন্য ডিফল্ট পোর্ট
-ENV PORT=8080
-
-# বিল্ট-ইন ওয়েব সার্ভার চালু রাখা যাতে ক্র্যাশ না করে
-CMD sh -c "httpd -f -p ${PORT:-8080}"
+CMD ["nginx", "-g", "daemon off;"]
