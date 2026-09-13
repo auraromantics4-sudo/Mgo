@@ -1,9 +1,19 @@
-from flask import Flask
-app = Flask(__name__)
+FROM python:3.10-slim
 
-@app.route('/')
-def home():
-    return "Status: Operational"
+# লিনাক্স প্যাকেজ ম্যানেজার আপডেট ও FFmpeg ইন্সটল
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends ffmpeg && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8080)
+WORKDIR /app
+
+# প্রয়োজনীয় ডিপেন্ডেন্সি
+RUN pip install --no-cache-dir flask
+
+COPY . /app
+
+# রেলওয়ের ডাইনামিক পোর্ট বাইন্ড করার জন্য
+ENV PORT=8080
+
+CMD ["python", "app.py"]
