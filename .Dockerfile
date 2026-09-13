@@ -1,9 +1,9 @@
-FROM python:3.10-slim
+from flask import Flask
+app = Flask(__name__)
 
-WORKDIR /app
+@app.route('/')
+def home():
+    return "Status: Operational"
 
-COPY . /app
-
-RUN pip install --no-cache-dir flask
-
-CMD ["python", "app.py"]
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=8080)
